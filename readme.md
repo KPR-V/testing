@@ -229,3 +229,113 @@ Pass the blob_id to /files to create a new file resource and generate metadata.
 Step 3: Link to Credential
 
 Use the returned file resource link in a verifiable credential field with VcLinkedFileClaim.
+
+---
+# Compliance Officer Panel - Challenge 2
+
+In this challenge, a bank's compliance officer reviews and approves/rejects Miko's submitted Verifiable Credentials (VCs) to determine if they meet the bank's requirements. If approved, the officer issues a final "Bank Account Confirmation" VC. This README outlines the steps to implement a user-friendly UI and backend for managing Miko's VC submissions.
+
+---
+
+## Workflow and Components for Challenge 2
+
+### Step 1: Extend Backend Functions from Challenge 1
+
+**VC Retrieval and Verification:**
+- Reuse backend functions from Challenge 1 for fetching, verifying, and linking VCs.
+- These functions will retrieve Miko's submitted VCs and assist in their verification.
+
+**Verification and Approval Function:**
+- Implement a new function to approve or reject each VC based on bank requirements.
+- Set a status for each VC (e.g., "Approved" or "Rejected").
+
+---
+
+### Step 2: Develop the Compliance Officer Panel UI
+
+#### Dashboard Interface:
+- **Purpose:** Display all pending applications.
+- **Functionality:** Each submission, like Miko's Bank Account Application, shows a summary of submitted VCs and their current status.
+
+#### VC Viewing Panel:
+- **Purpose:** Display detailed information for each submitted VC.
+- **Details to Show:** 
+  - VC Issuer (e.g., Municipality of Amsterdam, Miko’s employer)
+  - Linked Status (confirm if VCs are correctly interlinked)
+  - Document content preview (fields like ID number, employer name, anonymized as needed)
+
+#### Search Functionality:
+- **Purpose:** Allow the officer to search through VCs for specific fields (e.g., name, issuer, date).
+- **Use Case:** This enables quick cross-referencing of information.
+
+#### Approval and Rejection Buttons:
+- **Purpose:** Enable the officer to mark each VC as "Approved" or "Rejected."
+- **Status Update:** Update the backend and reflect the new status in the UI.
+
+---
+
+### Step 3: Implement Document Verification Logic
+
+#### Interlinked VC Check:
+- **Functionality:** Ensure that only properly linked VCs are approved.
+- **Example:** Miko’s Proof of Registration VC should be linked to her Employment Contract and Proof of Identity.
+- **Error Handling:** Display a message for incorrectly linked VCs, prompting Miko to resubmit the correct documents.
+
+#### Status Logging and Notifications:
+- **Purpose:** Log each approval/rejection and notify Miko's wallet of status changes.
+- **Rejection Note:** Add a reason for each rejection to guide Miko on required corrections.
+
+---
+
+### Step 4: Issue the Final “Bank Account Confirmation” VC
+
+**Automated Issuance:**
+- **Enable Button:** If all VCs are approved, activate the "Issue Bank Account VC" button.
+- **Functionality:** This VC confirms Miko’s bank account approval and is sent to her wallet.
+
+**Send VC to Miko’s Wallet:**
+- **Notification:** Miko’s wallet receives the Bank Account Confirmation VC.
+- **Task Completion:** Miko’s bank account setup task is marked as complete.
+
+---
+
+## Example Workflow
+
+1. **Dashboard View:** 
+   - Compliance officer logs in and sees Miko’s Bank Account Application with a summary of submitted VCs.
+
+2. **Document Review:** 
+   - Officer selects Miko’s application to review detailed VC information:
+     - **Proof of Registration:** Issued by Municipality, linked to Employment Contract and Proof of Identity.
+     - **Employment Contract:** Issued by employer, valid, interlinked.
+     - **Proof of Identity:** Government-issued and verified.
+
+3. **Approving Documents:** 
+   - Officer approves Proof of Registration and Employment Contract.
+   - If Proof of Identity had issues (e.g., expired), the officer rejects it and provides a reason.
+
+4. **Issuing Final VC:** 
+   - Upon all VC approvals, the "Issue Bank Account VC" button activates. 
+   - The officer clicks it, generating and sending the final VC to Miko’s wallet.
+
+5. **Notification and Task Completion:** 
+   - Miko’s wallet receives the Bank Account Confirmation VC.
+   - Miko’s task list marks the account setup as complete, and she is notified of successful account creation.
+
+---
+
+## Summary of Steps
+
+1. **Reuse Backend Verification Functions:** Extend document-fetching and linking functions from Challenge 1.
+2. **Develop Compliance Officer Panel UI:** 
+   - Create a dashboard for pending applications.
+   - Design a VC review screen with options to approve, reject, and search VCs.
+3. **Implement Document Verification Logic:**
+   - Only allow approval of interlinked VCs.
+   - Log actions and send notifications to Miko’s wallet.
+4. **Issue Final VC:** Upon approval of all VCs, allow the officer to issue a "Bank Account Confirmation VC."
+5. **Send Confirmation to Miko:** Automatically send the final VC to Miko’s wallet and mark the task as complete.
+
+---
+
+This README outlines the necessary steps to create a compliance officer panel that efficiently manages VC submissions, supports document verification, and provides a seamless UI for bank officers.
