@@ -256,4 +256,4 @@ async function miko_to_employer_to_miko() {
     console.error("Error during miko handles response:", error);
   }
 }
-// miko_to_employer_to_miko();
+miko_to_employer_to_miko();
