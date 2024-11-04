@@ -7,7 +7,7 @@
   "scripts": {
     "format": "prettier . --cache --write --log-level warn --ignore-path .gitignore --ignore-path .prettierignore",
     "typecheck": "tsc --noEmit",
-    "start": "node --loader ts-node/esm server.ts"
+    "start": "node --loader ts-node/esm miko_to_employer_to_miko.ts"
   },
   "dependencies": {
     "@truvity/sdk": "^0.28.2",

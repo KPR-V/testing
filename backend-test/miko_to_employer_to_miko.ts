@@ -5,8 +5,10 @@ import {
   VcLinkedCredentialClaim,
   VcNotEmptyClaim,
 } from "@truvity/sdk";
-
+import { FileData, files } from "@truvity/sdk/api";
+import fs, { readFileSync } from "fs";
 import "dotenv/config";
+
 
 const miko_client = new TruvityClient({
   apiKey: process.env.TIM_API_KEY,
@@ -169,49 +171,47 @@ async function miko_to_employer_to_miko() {
       }
     );
     console.log("Unfulfilled requests:", unfulfilledRequests.length);
+   
+    for (const item of unfulfilledRequests) {
+      const proofofidentityVc = proofofidentity.map(item);
+      const firstName = await proofofidentityVc.getClaims();
+      console.log("Employment request received for:", firstName)
+    
+      const contractDraft = await employmentcontract.create({
+        claims: {
+          nameofthecompany: "amsterdam'company",
+          nameoftheemployee: "miko",
+          position: "software developer",
+          date_of_joining: "2022-01-01",
+          phone_number: 1234567890,
+          email: firstName.email,
+          salary: 10000,
+          place_of_work: "onsite,amsterdam",
+        },
+      });
+      console.log("contract draft created");
+      const contractVc = await contractDraft.issue(employerKey.id);
+      console.log("contract VC issued");
 
-    // for (const item of unfulfilledRequests) {
-    //   const proofofidentityVc = proofofidentity.map(item);
-    //   const { firstName } = await proofofidentityVc.getClaims();
-    // }
-
-    // above code can be used to access the request claims and perform some cutom logic based on the request claim and to operate on all the request claims at once
-    // below code is to operate on the first claim of the request
-
-    const contractDraft = await employmentcontract.create({
-      claims: {
-        nameofthecompany: "amsterdam'company",
-        nameoftheemployee: "miko",
-        position: "software developer",
-        date_of_joining: "2022-01-01",
-        phone_number: 1234567890,
-        email: "miko@dif.com",
-        salary: 10000,
-        place_of_work: "onsite,amsterdam",
-      },
-    });
-    console.log("contract draft created");
-    const contractVc = await contractDraft.issue(employerKey.id);
-    console.log("contract VC issued");
-
-    const responseDraft = await employmentcontractresponse.create({
-      claims: {
-        request: proofofidentity.map(unfulfilledRequests[0]),
-        contract: contractVc,
-        employer_name: "amsterdam company",
-      },
-    });
-    console.log("response draft created");
-    const responseVc = await responseDraft.issue(employerKey.id);
-    console.log("response VC issued");
-    const presentation = await employer_client
-      .createVpDecorator()
-      .issue([contractVc, responseVc], employerKey.id);
-    const { issuer: requesterDid } = await proofofidentity
-      .map(unfulfilledRequests[0])
-      .getMetaData();
-    console.log("Requester DID:", requesterDid);
-    await presentation.send(requesterDid, employerKey.id);
+      const responseDraft = await employmentcontractresponse.create({
+        claims: {
+          request: proofofidentity.map(unfulfilledRequests[0]),
+          contract: contractVc,
+          employer_name: "amsterdam company",
+        },
+      });
+      console.log("response draft created");
+      const responseVc = await responseDraft.issue(employerKey.id);
+      console.log("response VC issued");
+      const presentation = await employer_client
+        .createVpDecorator()
+        .issue([contractVc, responseVc], employerKey.id);
+      const { issuer: requesterDid } = await proofofidentity
+        .map(unfulfilledRequests[0])
+        .getMetaData();
+      console.log("Requester DID:", requesterDid);
+      await presentation.send(requesterDid, employerKey.id);
+    }
   } catch (error) {
     console.error("Error during Employer handling request:", error);
   }
